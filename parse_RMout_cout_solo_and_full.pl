@@ -79,12 +79,12 @@ my $LTR_gap_len = 60;
 my @LTR_array = (); #the array for merged LTRs.
 my %curr_hash = ();
 
-my %ERV_len = ("MLERV1_1" => 481,
-		"MLERV1_2" => 623,
-		"MLERV1_3.1" => 450,
-		"MLERV1_3.2" => 437,
-		"MLERV1_4" => 492,
-		"ERV1-1_FCa-LTR" => 358,
+my %ERV_len = ("MLERV1_1" => 475,
+		"MLERV1_2" => 615,
+		"MLERV1_3.1" => 444,
+		"MLERV1_3.2" => 431,
+		"MLERV1_4" => 486,
+		"ERV1-1_FCa-LTR" => 353,
 		);
 #next: merge fragmented soloLTRs (if any)
 for (my $i = 0;$i<=$#RM_array;$i++){
@@ -116,7 +116,9 @@ my @intact_array = ();
 for (my $i = 0;$i<=$#LTR_array;$i++){
 	#get intact LTR length:
 	my $intact_len = $ERV_len{$LTR_array[$i]{"repname"}};
-	push @intact_array, $LTR_array[$i] if ($LTR_array[$i]{"repend"} > $intact_len - 10 and $LTR_array[$i]{"repstart"} < 100); #5' end is generally more divergenced, so 100bp missing in 5' end is accepted; while >10bp missing in the 3' end is considered as incomplete LTR.
+	push @intact_array, $LTR_array[$i] if ($LTR_array[$i]{"repend"} > $intact_len - 10 and $LTR_array[$i]{"repstart"} < 150); #5' end is generally more divergenced, so 100bp missing in 5' end is accepted; while >10bp missing in the 3' end is considered as incomplete LTR.
+	#100bp in 5'end for MB,
+	#150bp in 5'end for EF
 }
 #parse @intact_array to annotate full length ERVs:
 for (my $i =0;$i<$#intact_array;$i++){
