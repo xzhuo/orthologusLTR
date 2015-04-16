@@ -115,7 +115,7 @@ for (my $i = 0;$i<=$#LTR_array;$i++){
 	my $intact_len = $ERV_len{$LTR_array[$i]{"repname"}};
 	push @intact_array, $LTR_array[$i] if ($LTR_array[$i]{"repend"} > $intact_len - 30 and $LTR_array[$i]{"repstart"} < 30);
 }
-#parse @intact_array t0 annotate full length ERVs:
+#parse @intact_array to annotate full length ERVs:
 for (my $i =0;$i<$#intact_array;$i++){
 	my $j = $i+1;
 	while($j<=$#intact_array and $intact_array[$j]{"chr"} eq $intact_array[$i]{"chr"} and $intact_array[$j]{"genoend"} < $intact_array[$i]{"genostart"} + $ERV_max_len){
