@@ -116,7 +116,7 @@ my @intact_array = ();
 for (my $i = 0;$i<=$#LTR_array;$i++){
 	#get intact LTR length:
 	my $intact_len = $ERV_len{$LTR_array[$i]{"repname"}};
-	push @intact_array, $LTR_array[$i] if ($LTR_array[$i]{"repend"} > $intact_len - $LTR_gap_len and $LTR_array[$i]{"repstart"} < $LTR_gap_len);
+	push @intact_array, $LTR_array[$i] if ($LTR_array[$i]{"repend"} > $intact_len - 10 and $LTR_array[$i]{"repstart"} < 100); #5' end is generally more divergenced, so 100bp missing in 5' end is accepted; while >10bp missing in the 3' end is considered as incomplete LTR.
 }
 #parse @intact_array to annotate full length ERVs:
 for (my $i =0;$i<$#intact_array;$i++){
@@ -128,7 +128,8 @@ for (my $i =0;$i<$#intact_array;$i++){
 		for ($i+1..$j-1){
 			if($intact_array[$_]{"strand"} eq $intact_array[$i]{"strand"} and $intact_array[$_]{"repname"} eq $intact_array[$i]{"repname"} and $intact_array[$_]{"genoend"} > $intact_array[$i]{"genostart"} + $ERV_min_len){
 				#print every pair of full length ERVs, 1 based bed format
-				print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$_]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\tfull\n";
+				print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$_]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$i]{'repstart'}\t$intact_array[$_]{'repend'}\tfull\n" if $intact_array[$i]{'strand'} eq "+";
+				print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$_]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$_]{'repstart'}\t$intact_array[$i]{'repend'}\tfull\n" if $intact_array[$i]{'strand'} eq "-";
 				$intact_array[$i]{"LI"} = $intact_array[$i]{"LI"}."full5";
 				$intact_array[$_]{"LI"} = $intact_array[$_]{"LI"}."full3";
 			}
@@ -139,7 +140,7 @@ for (my $i =0;$i<$#intact_array;$i++){
 for (my $i =0;$i<=$#intact_array;$i++){
 	if ($intact_array[$i]{"LI"} eq "LTR"){
 		#1 based bed format
-		print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$i]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\tsolo\n";
+		print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$i]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$i]{'repstart'}\t$intact_array[$i]{'repend'}\tsolo\n";
 	}
 }
 close OUT;
