@@ -82,7 +82,7 @@ my %curr_hash = ();
 my %ERV_len = ("MLERV1_1" => 475,
 		"MLERV1_2" => 615,
 		"MLERV1_3.1" => 444,
-		"MLERV1_3.2" => 431,
+		"MLERV1_3.2" => 432,
 		"MLERV1_4" => 486,
 		"ERV1-1_FCa-LTR" => 353,
 		);
