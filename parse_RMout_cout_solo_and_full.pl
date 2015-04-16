@@ -75,7 +75,7 @@ open(OUT, ">$file".".out");
 my $ERV_max_len = 10000;
 my $ERV_min_len = 3000;
 my $LTR_len = 1000; #so those ERVs with other TE insertion within LTR won't be identified here!!
-my $LTR_gap_len = 60;
+my $LTR_gap_len = 100;
 my @LTR_array = (); #the array for merged LTRs.
 my %curr_hash = ();
 
