@@ -26,6 +26,7 @@ while(<IN>){
 		}
 		if ($line[8] eq "+"){
 			%RM_hash = ( #the hash of each line
+					"div" => $line[1],
 					"chr" => $line[4],
 					"genostart" => $line[5],
 					"genoend" => $line[6],
@@ -40,6 +41,7 @@ while(<IN>){
 		}
 		if ($line[8] eq "-" or $line[8] eq "C"){
 			%RM_hash = ( #the hash of each line
+					"div" => $line[1],
 					"chr" => $line[4],
 					"genostart" => $line[5],
 					"genoend" => $line[6],
@@ -56,7 +58,8 @@ while(<IN>){
 	}
 }
 close(IN);
-@RM_array = sort {$a->{"chr"} cmp $b->{"chr"} or 
+@RM_array = sort {	$a->{"repname"} cmp $b->{"repname"} or
+			$a->{"chr"} cmp $b->{"chr"} or 
 			$a->{"genostart"} <=> $b->{"genostart"} or
 			$a->{"genoend"} <=> $b->{"genoend"}
 		} @RM_array;
@@ -113,7 +116,7 @@ my @intact_array = ();
 for (my $i = 0;$i<=$#LTR_array;$i++){
 	#get intact LTR length:
 	my $intact_len = $ERV_len{$LTR_array[$i]{"repname"}};
-	push @intact_array, $LTR_array[$i] if ($LTR_array[$i]{"repend"} > $intact_len - 30 and $LTR_array[$i]{"repstart"} < 30);
+	push @intact_array, $LTR_array[$i] if ($LTR_array[$i]{"repend"} > $intact_len - $LTR_gap_len and $LTR_array[$i]{"repstart"} < $LTR_gap_len);
 }
 #parse @intact_array to annotate full length ERVs:
 for (my $i =0;$i<$#intact_array;$i++){
@@ -124,8 +127,8 @@ for (my $i =0;$i<$#intact_array;$i++){
 	if($j > $i+1){
 		for ($i+1..$j-1){
 			if($intact_array[$_]{"strand"} eq $intact_array[$i]{"strand"} and $intact_array[$_]{"repname"} eq $intact_array[$i]{"repname"} and $intact_array[$_]{"genoend"} > $intact_array[$i]{"genostart"} + $ERV_min_len){
-				#print every pair of full length ERVs
-				print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$_]{'genoend'}\t$intact_array[$i]{'repname'}\tfull\n";
+				#print every pair of full length ERVs, 1 based bed format
+				print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$_]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\tfull\n";
 				$intact_array[$i]{"LI"} = $intact_array[$i]{"LI"}."full5";
 				$intact_array[$_]{"LI"} = $intact_array[$_]{"LI"}."full3";
 			}
@@ -134,16 +137,10 @@ for (my $i =0;$i<$#intact_array;$i++){
 }
 #print chr\tstart\end\n for all soloLTRs and full length ERVs:
 for (my $i =0;$i<=$#intact_array;$i++){
-#	print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$i]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'LI'}\n";
 	if ($intact_array[$i]{"LI"} eq "LTR"){
-		print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$i]{'genoend'}\t$intact_array[$i]{'repname'}\tsolo\n";
+		#1 based bed format
+		print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$i]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\tsolo\n";
 	}
-#	elsif($intact_array[$i]{"LI"} eq "full5"){
-#		print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t";
-#	}
-#	elsif($intact_array[$i]{"LI"} eq "full3"){
-#		print OUT "$intact_array[$i]{'genoend'}\t$intact_array[$i]{'repname'}\tfull\n";
-#	}
 }
 close OUT;
 exit;
