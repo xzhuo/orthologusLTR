@@ -63,7 +63,6 @@ close(IN);
 			$a->{"genostart"} <=> $b->{"genostart"} or
 			$a->{"genoend"} <=> $b->{"genoend"}
 		} @RM_array;
-open(OUT, ">$file".".out");
 #variable: 
 #			$i: the upper internal region line number;
 #			$j: the lower internal region line number;
@@ -120,6 +119,16 @@ for (my $i = 0;$i<=$#LTR_array;$i++){
 	#100bp in 5'end for MB,
 	#150bp in 5'end for EF
 }
+
+open (BED, ">file.sololtr.bed");
+#print bed file of all soloLTR for phylogeny:
+for (my $i =0;$i<=$#intact_array;$i++){
+	my $start = $intact_array[$i]{'genostart'}-1; #transform to 0 based coordinate for bedtools.
+	print BED "$intact_array[$i]{'chr'}\t$start\t$intact_array[$i]{'genoend'}\t$species"."_$intact_array[$i]{'repname'}_$i\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$i]{'repstart'}\t$intact_array[$i]{'repend'}\n";
+}
+close BED;
+
+open(OUT, ">$file".".out");
 #parse @intact_array to annotate full length ERVs:
 for (my $i =0;$i<$#intact_array;$i++){
 	my $j = $i+1;
