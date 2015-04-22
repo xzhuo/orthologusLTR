@@ -16,9 +16,9 @@ while(<IN>){
 	chomp;
 	my @line = split();
 	my %RM_hash; #hash of each line
-	if (defined $line[10] && ($line[10] eq "Unspecified" || $line[10] =~ /^LTR\// || $line[10] =~ /^ERV/)){
+	if (defined $line[10] && ($line[10] eq "Unspecified" || $line[10] =~ /^LTR\// || $line[10] =~ /^ERV/) && $line[9] =~ m/ltr/){ #only parse ltr sequence, ignore internal regions.
 		my $INT;
-		if($line[9] =~ m/INT/){
+		if($line[9] =~ m/int/){
 			$INT = "INT";
 		}
 		else{
@@ -77,13 +77,14 @@ my $LTR_len = 1000; #so those ERVs with other TE insertion within LTR won't be i
 my $LTR_gap_len = 100;
 my @LTR_array = (); #the array for merged LTRs.
 my %curr_hash = ();
-
+my $species = "pangolin";
 my %ERV_len = ("MLERV1_1" => 475,
 		"MLERV1_2" => 615,
 		"MLERV1_3.1" => 444,
 		"MLERV1_3.2" => 432,
 		"MLERV1_4" => 486,
 		"ERV1-1_FCa-LTR" => 353,
+		"manis_ltr" => 302,
 		);
 #next: merge fragmented soloLTRs (if any)
 for (my $i = 0;$i<=$#RM_array;$i++){
@@ -120,7 +121,7 @@ for (my $i = 0;$i<=$#LTR_array;$i++){
 	#150bp in 5'end for EF
 }
 
-open (BED, ">file.sololtr.bed");
+open (BED, ">$file.sololtr.bed");
 #print bed file of all soloLTR for phylogeny:
 for (my $i =0;$i<=$#intact_array;$i++){
 	my $start = $intact_array[$i]{'genostart'}-1; #transform to 0 based coordinate for bedtools.
