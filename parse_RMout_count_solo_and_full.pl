@@ -129,7 +129,7 @@ for (my $i =0;$i<=$#intact_array;$i++){
 }
 close BED;
 
-open(OUT, ">$file".".out");
+open(OUT, ">$file".".all.bed");
 #parse @intact_array to annotate full length ERVs:
 for (my $i =0;$i<$#intact_array;$i++){
 	my $j = $i+1;
@@ -139,9 +139,10 @@ for (my $i =0;$i<$#intact_array;$i++){
 	if($j > $i+1){
 		for ($i+1..$j-1){
 			if($intact_array[$_]{"strand"} eq $intact_array[$i]{"strand"} and $intact_array[$_]{"repname"} eq $intact_array[$i]{"repname"} and $intact_array[$_]{"genoend"} > $intact_array[$i]{"genostart"} + $ERV_min_len){
-				#print every pair of full length ERVs, 1 based bed format
-				print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$_]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$i]{'repstart'}\t$intact_array[$_]{'repend'}\tfull\n" if $intact_array[$i]{'strand'} eq "+";
-				print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$_]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$_]{'repstart'}\t$intact_array[$i]{'repend'}\tfull\n" if $intact_array[$i]{'strand'} eq "-";
+				#print every pair of full length ERVs, 0 based bed format
+				my $start = $intact_array[$i]{'genostart'}-1; #transform to 0 based coordinate for bedtools.
+				print OUT "$intact_array[$i]{'chr'}\t$start\t$intact_array[$_]{'genoend'}\t$species"."_$intact_array[$i]{'repname'}_$i\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$i]{'repstart'}\t$intact_array[$_]{'repend'}\tfull\n" if $intact_array[$i]{'strand'} eq "+";
+				print OUT "$intact_array[$i]{'chr'}\t$start\t$intact_array[$_]{'genoend'}\t$species"."_$intact_array[$i]{'repname'}_$i\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$_]{'repstart'}\t$intact_array[$i]{'repend'}\tfull\n" if $intact_array[$i]{'strand'} eq "-";
 				$intact_array[$i]{"LI"} = $intact_array[$i]{"LI"}."full5";
 				$intact_array[$_]{"LI"} = $intact_array[$_]{"LI"}."full3";
 			}
@@ -151,8 +152,9 @@ for (my $i =0;$i<$#intact_array;$i++){
 #print chr\tstart\end\n for all soloLTRs and full length ERVs:
 for (my $i =0;$i<=$#intact_array;$i++){
 	if ($intact_array[$i]{"LI"} eq "LTR"){
-		#1 based bed format
-		print OUT "$intact_array[$i]{'chr'}\t$intact_array[$i]{'genostart'}\t$intact_array[$i]{'genoend'}\t$intact_array[$i]{'repname'}\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$i]{'repstart'}\t$intact_array[$i]{'repend'}\tsolo\n";
+		#0 based bed format
+		my $start = $intact_array[$i]{'genostart'}-1; #transform to 0 based coordinate for bedtools.
+		print OUT "$intact_array[$i]{'chr'}\t$start\t$intact_array[$i]{'genoend'}\t$species"."_$intact_array[$i]{'repname'}_$i\t$intact_array[$i]{'div'}\t$intact_array[$i]{'strand'}\t$intact_array[$i]{'repstart'}\t$intact_array[$i]{'repend'}\tsolo\n";
 	}
 }
 close OUT;
