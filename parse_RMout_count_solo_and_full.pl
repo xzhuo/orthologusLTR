@@ -16,7 +16,7 @@ while(<IN>){
 	chomp;
 	my @line = split();
 	my %RM_hash; #hash of each line
-	if (defined $line[10] && ($line[10] eq "Unspecified" || $line[10] =~ /^LTR\// || $line[10] =~ /^ERV/) && $line[9] =~ m/ltr/){ #only parse ltr sequence, ignore internal regions.
+	if (defined $line[10] && ($line[10] eq "Unspecified" || $line[10] =~ /^LTR\// || $line[10] =~ /^ERV/) && $line[9] =~ m/ltr/i){ #only parse ltr sequence, ignore internal regions.
 		my $INT;
 		if($line[9] =~ m/int/){
 			$INT = "INT";
