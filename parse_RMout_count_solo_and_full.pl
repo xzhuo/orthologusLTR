@@ -77,12 +77,17 @@ my $LTR_len = 1000; #so those ERVs with other TE insertion within LTR won't be i
 my $LTR_gap_len = 100;
 my @LTR_array = (); #the array for merged LTRs.
 my %curr_hash = ();
-my $species = "pangolin";
-my %ERV_len = ("MLERV1_1" => 475,
+
+##########################################################################
+my $species = "pangolin"; #change this parameter accordingly!!!!
+
+
+
+my %ERV_len = ("MLERV1_1.1" => 475,
 		"MLERV1_2" => 615,
 		"MLERV1_3.1" => 444,
 		"MLERV1_3.2" => 432,
-		"MLERV1_4" => 486,
+		"MLERV1_1.2" => 486,
 		"ERV1-1_FCa-LTR" => 353,
 		"manis_ltr" => 302,
 		);
