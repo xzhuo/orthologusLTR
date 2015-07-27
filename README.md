@@ -1,2 +1,2 @@
 # orthologusLTR
-branch for the retrovirology paper, with specific repeat library  
+branch for the PLOSpathogen paper, with specific repeat library  
